@@ -1,17 +1,15 @@
 FROM python:3.9-slim
 
-# Install Node.js 
-RUN apt-get update && apt-get install -y nodejs npm
+RUN apt-get update && apt-get install -y curl
 
-# Install Serverless Framework and the offline plugin globally
-RUN npm install -g serverless serverless-offline
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
-# Set the working directory
+RUN npm install -g serverless@3 serverless-offline
+
 WORKDIR /app
 
-# Copy python dependencies 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# The command to start the local serverless emulator
 CMD ["serverless", "offline", "--host", "0.0.0.0"]
